@@ -6,11 +6,15 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -19,11 +23,16 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.il76.jetpackcontacts.ui.theme.Grey
 import com.il76.jetpackcontacts.ui.theme.JetpackContactsTheme
 
 class MainActivity : ComponentActivity() {
@@ -52,16 +61,7 @@ class MainActivity : ComponentActivity() {
                             .padding(innerPadding),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
-                        ContactDetails(Contact(
-                            name = "Киняев",
-                            surname = "Джейсонович",
-                            familyName = "Киняев",
-                            imageRes = null,
-                            isFavorite = false,
-                            phone = "+7 322 222 33 22",
-                            address = "000, Hollywood Boulevard, Los Angeles, CA 90028.",
-                            email = "info@abc.dev"
-                        ))
+                        ContactDetails(createSampleContact())
                     }
                 }
             }
@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ContactDetails(contact: Contact, modifier: Modifier = Modifier) {
+fun ContactDetails(contact: Contact) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -79,37 +79,78 @@ fun ContactDetails(contact: Contact, modifier: Modifier = Modifier) {
             Image(
                 painter = painterResource(contact.imageRes),
                 contentDescription = null,
-                modifier = Modifier.size(150.dp)
+                modifier = Modifier.size(200.dp).padding(top = 10.dp, bottom = 15.dp)
             )
+        } else {
+            RoundInitials(contact.getInitials())
         }
         Text(
             text = "${contact.name} ${contact.surname}".trim(),
-            modifier = modifier
+            fontWeight = FontWeight.Bold
         )
         Text(
             text = contact.familyName,
-            modifier = modifier,
             fontSize = 26.sp
         )
+        Column (modifier = Modifier.padding(top = 20.dp, start = 100.dp)) {
+            if (contact.phone.isNotEmpty()) {
+                ShowInfoRow(stringResource(R.string.phone), contact.phone)
+            }
+            if (contact.address.isNotEmpty()) {
+                ShowInfoRow(stringResource(R.string.address), contact.address)
+            }
+            if (contact.email?.isNotEmpty() == true) {
+                ShowInfoRow(stringResource(R.string.email), contact.email)
+            }
+        }
     }
 
 
+}
+
+@Composable
+fun RoundInitials(initials: String) {
+    Box(
+        modifier = Modifier.padding(top = 10.dp, bottom = 15.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.circle),
+                contentDescription = null,
+                tint = Grey
+            )
+            Text(
+                text = initials
+            )
+        }
+    }
+}
+
+@Composable
+fun ShowInfoRow(name: String, value: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = "$name:",
+            modifier = Modifier.padding(end = 8.dp).width(80.dp),
+            fontStyle = FontStyle.Italic,
+            fontSize = 14.sp,
+            textAlign = TextAlign.Right
+        )
+        Text(
+            text = value,
+            fontSize = 14.sp
+        )
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun ContactDetailsNophotoPreview() {
     JetpackContactsTheme {
-        ContactDetails(Contact(
-            name = "Фома",
-            surname = "Джейсонович",
-            familyName = "Киняев",
-            imageRes = null,
-            isFavorite = false,
-            phone = "+7 322 222 33 22",
-            address = "000, Hollywood Boulevard, Los Angeles, CA 90028.",
-            email = "info@abc.dev"
-        ))
+        ContactDetails(createSampleContact())
     }
 }
 
@@ -117,15 +158,19 @@ fun ContactDetailsNophotoPreview() {
 @Composable
 fun ContactDetailsPreview() {
     JetpackContactsTheme {
-        ContactDetails(Contact(
-            name = "Фома",
-            surname = "Джейсонович",
-            familyName = "Киняев",
-            imageRes = R.drawable.matt_daymon,
-            isFavorite = false,
-            phone = "+7 322 222 33 22",
-            address = "000, Hollywood Boulevard, Los Angeles, CA 90028.",
-            email = "info@abc.dev"
-        ))
+        ContactDetails(createSampleContact(R.drawable.matt_daymon))
     }
+}
+
+fun createSampleContact(imageRes: Int? = null): Contact {
+    return Contact(
+        name = "Фома",
+        surname = "Джейсонович",
+        familyName = "Киняев",
+        imageRes = imageRes,
+        isFavorite = false,
+        phone = "+7 322 222 33 22",
+        address = "000, Hollywood Boulevard, Los Angeles, CA 90028.",
+        email = "info@abc.dev"
+    )
 }

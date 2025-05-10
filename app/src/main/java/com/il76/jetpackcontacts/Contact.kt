@@ -9,4 +9,8 @@ data class Contact(
     val phone: String, //Телефон
     val address: String, //Адрес
     val email: String? = null, //E-mail
-)
+) {
+    fun getInitials(): String {
+        return name.substring(0,1) + surname?.substring(0,1)
+    }
+}
