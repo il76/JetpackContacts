@@ -11,6 +11,13 @@ data class Contact(
     val email: String? = null, //E-mail
 ) {
     fun getInitials(): String {
-        return name.substring(0,1) + surname?.substring(0,1)
+        var initials = ""
+        if (name.isNotEmpty()) {
+            initials += name.substring(0,1)
+        }
+        if (!surname.isNullOrEmpty()) {
+            initials += surname.substring(0,1)
+        }
+        return initials
     }
 }

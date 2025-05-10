@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +22,6 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
@@ -88,10 +86,21 @@ fun ContactDetails(contact: Contact) {
             text = "${contact.name} ${contact.surname}".trim(),
             fontWeight = FontWeight.Bold
         )
-        Text(
-            text = contact.familyName,
-            fontSize = 26.sp
-        )
+        Row {
+            Text(
+                text = contact.familyName,
+                fontSize = 26.sp
+            )
+            if (contact.isFavorite) {
+                Image(
+                    modifier = Modifier.padding(start = 4.dp)
+                        .align(Alignment.CenterVertically),
+                    painter = painterResource(id = android.R.drawable.star_big_on),
+                    contentDescription = null
+                )
+            }
+        }
+
         Column (modifier = Modifier.padding(top = 20.dp, start = 100.dp)) {
             if (contact.phone.isNotEmpty()) {
                 ShowInfoRow(stringResource(R.string.phone), contact.phone)
@@ -134,14 +143,15 @@ fun ShowInfoRow(name: String, value: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = "$name:",
-            modifier = Modifier.padding(end = 8.dp).width(80.dp),
+            modifier = Modifier.padding(end = 8.dp).weight(0.6F),
             fontStyle = FontStyle.Italic,
             fontSize = 14.sp,
             textAlign = TextAlign.Right
         )
         Text(
             text = value,
-            fontSize = 14.sp
+            fontSize = 14.sp,
+            modifier = Modifier.weight(1F),
         )
     }
 }
@@ -150,7 +160,7 @@ fun ShowInfoRow(name: String, value: String) {
 @Composable
 fun ContactDetailsNophotoPreview() {
     JetpackContactsTheme {
-        ContactDetails(createSampleContact())
+        ContactDetails(createSampleContactNophoto())
     }
 }
 
@@ -165,12 +175,25 @@ fun ContactDetailsPreview() {
 fun createSampleContact(imageRes: Int? = null): Contact {
     return Contact(
         name = "Фома",
-        surname = "Джейсонович",
+        surname = "",
         familyName = "Киняев",
         imageRes = imageRes,
         isFavorite = false,
         phone = "+7 322 222 33 22",
         address = "000, Hollywood Boulevard, Los Angeles, CA 90028.",
         email = "info@abc.dev"
+    )
+}
+
+fun createSampleContactNophoto(imageRes: Int? = null): Contact {
+    return Contact(
+        name = "Фома",
+        surname = "Джейсонович",
+        familyName = "Киняев",
+        imageRes = null,
+        isFavorite = true,
+        phone = "+7 322 222 33 22",
+        address = "000, Hollywood Boulevard, Los Angeles, CA 90028.",
+
     )
 }
