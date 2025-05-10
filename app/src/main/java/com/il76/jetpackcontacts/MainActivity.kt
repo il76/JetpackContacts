@@ -56,7 +56,7 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     Column(
                         modifier = Modifier
-                            .padding(innerPadding),
+                            .padding(innerPadding).fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                     ) {
                         ContactDetails(createSampleContact())
@@ -101,7 +101,7 @@ fun ContactDetails(contact: Contact) {
             }
         }
 
-        Column (modifier = Modifier.padding(top = 20.dp, start = 100.dp)) {
+        Column (modifier = Modifier.padding(top = 20.dp)) {
             if (contact.phone.isNotEmpty()) {
                 ShowInfoRow(stringResource(R.string.phone), contact.phone)
             }
@@ -140,10 +140,13 @@ fun RoundInitials(initials: String) {
 
 @Composable
 fun ShowInfoRow(name: String, value: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Text(
             text = "$name:",
-            modifier = Modifier.padding(end = 8.dp).weight(0.6F),
+            modifier = Modifier.padding(end = 8.dp).weight(1F),
             fontStyle = FontStyle.Italic,
             fontSize = 14.sp,
             textAlign = TextAlign.Right
