@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -69,6 +70,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun ContactDetails(contact: Contact) {
+    val initials = remember(contact) { contact.getInitials() }
+    val nameIO = remember(contact) { "${contact.name} ${contact.surname}".trim() }
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -80,10 +83,10 @@ fun ContactDetails(contact: Contact) {
                 modifier = Modifier.size(200.dp).padding(top = 10.dp, bottom = 15.dp)
             )
         } else {
-            RoundInitials(contact.getInitials())
+            RoundInitials(initials)
         }
         Text(
-            text = "${contact.name} ${contact.surname}".trim(),
+            text = nameIO,
             fontWeight = FontWeight.Bold
         )
         Row {
@@ -140,12 +143,13 @@ fun RoundInitials(initials: String) {
 
 @Composable
 fun ShowInfoRow(name: String, value: String) {
+    val formattedName = remember(name) { "$name:" }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "$name:",
+            text = formattedName,
             modifier = Modifier.padding(end = 8.dp).weight(1F),
             fontStyle = FontStyle.Italic,
             fontSize = 14.sp,
